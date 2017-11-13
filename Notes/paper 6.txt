@@ -1,0 +1,141 @@
+// Facial expression recognition with Convolutional Neural Networks:
+Coping with few data and the training sample order
+
+----------------------------------------------
+//Introduction
+
+/**** Give a brief overview, explain the problems that may occur, 
+	what technolgies are best, what datasets are best ******/
+
+- they define facial expressions as "facial changes in response to a person's 
+internal emotional state, intentions, or social communication."
+- They state that an over lap of subject and test data occurs in most models 
+for facial recognition which presents a misleading high accuracy. 
+- use the : CK + database, JAFFE database and BU-3DFE database 
+- For variability of ethnicity, they suggest train with one data set and test with another. 
+-" As described by Li and Jain [3], automatic facial expression
+analysis comprises three steps: face acquisition, facial data extraction
+and representation, and facial expression recognition"
+        - Face acquistion have 2 steps:
+            face detection and head pose estimation
+- After that, features are extracted usually within a vector known as a 
+	feature vector.
+- Methods are used to locate facial components like mouth, eyes and nose.
+- Liu et al states that expression recognitions systems use 3 stage training procedure:
+	//Feature learning:
+		- responsible for extraction of all features related to the facial expession.
+	//Feature selection:
+		- Selects the best features 
+		- Can be hard because pictures of the same person with different features
+			may be similar.
+	// Classifier
+		- one for each expression
+- Multilayer neural networks pack these 3 steps in to 1.
+- Convolution neural networks have a number of layers
+	// Convolutional layers 
+		- Characterised by the kernel size and number of maps
+		- THe kernel is shifted over the input image generation one map
+	//Sub-sampling 
+		- are used to increase position variance by reducing the map size.
+		- main types are Maximum-pooling and average pooling. 
+	// Fully connected layers
+		- a neural network but it's neurons are fully 
+			connected to with the previous layer. 
+- Supervised learning can be done using gradient descent. 
+- Advantage is that CNN's can use raw input image data. 
+- CK+ dateset gives the best accuracy as is has the most samples. 
+
+----------------------------------------------
+// RELATED WORK
+
+/** Good section as they do a review of each paper explored **/ 
+
+- They state that progress has been made because of deep neural networks
+- Advances because of GPU technologies. 
+- Song et al made a CNN for a mobile phone, its stated that overfitting can occur when
+	using such a small data sample on a large network. Therefore they used image augmentation
+	techniques to increase the amount of training data + dropout during network training.
+- they got an accuracy of 99.2 % with the CK+ dataset with (anger, happy, sad, suprise and neutral)
+- Burkert et all made a CNN with 15 layers. with 99.6 and 98.63% accuracy, but they state that this 
+	accuracy made be false as it is not gauranteed that their training and test sets where different.
+- They then compare the related works by expressing flaws of using overlapping data, number of expressions
+	
+----------------------------------------------
+
+
+//Facial Expression Recognition System
+- Their model has 2 phases: training and test. 
+- Training using grayscale images with expression ID and eye center locations
+- During testing, the system recieves a grayscale image of a face with the respective eye center
+	locations + outputs the predicted expression using the final trained network.
+- Training
+	- New images are generated to increase the database size. 
+	- Rotation correction is carried out to align the eyes horizontally. 
+	- Image is cropped and to remove the background
+	- Down sampling procedure used to get the features of different images in the same location.
+	- Intensity is then normalised. Normalised images are used to train the CNN. 
+- Testing
+	- Use the same methodologies as the training phase. 
+	- Outputs a single  number ID for 1 of the 6 expressions
+		0 - angry, 1 - disgust, 2 - fear, 3 - happy, 4 - sad, 5 - suprise.
+	
+//Synthetic Sample Generation. 
+- Normalisation isnt enough to ensure that alignment will be correct, but CNN's are good at
+	detecting even with distorted images
+- one problem is that CNN's take long to train
+- The amount of data available in public datasets isn't sufficient for this application
+- to address this problem, Simard et al proposed making synthehtic images (rotation, skewing)
+ to increase the database (IE: data augmentation) 
+- they use a 2D Guessian Distribution to introduce random noise in the locations of the
+	center of the eyes. 
+- for each image - 70 additional images were generated. 
+- This synthetic data is only used in training. 
+
+
+//Rotation Correction
+- Databases vary in rotation and are not related to the expression which can affect the accuracy
+	of the overall system. 
+- To address this, the facial area is aligned using rotation normalization with a horizon and
+a center point. 
+- To achieve this, to pieces of information are needed:
+	- The facial image and centre of both eyes
+- To perform the face alignment, a rotation transformation is used to align the eyes
+	with the horizontal axis. 
+
+//Image cropping
+- There is a lot of background information, which could decrease accuracy. 
+- cropping also removes parts that have no conritbution to facial expression (ears)
+- Region of interest is based on the ratio of the inter eyes distance. 
+	- 1:3 for eyes to top of head, 2:3 from eyes to bottom of head and
+		2:4 for distance of eyes
+
+//Down sampling
+- reduces image size for normalisation
+- Used linewar interpolation approach
+- 32 x 32 pixels
+- reduces the memory usage of the GPU
+
+// Intensity normalisation
+- Brightness and constrast can introduce a complexity problem 
+
+// CNN
+- network recieves 32x32 grayscale images
+- used 2 CNN layers, 2 sub sampling layers, 1 FC layer
+
+CNN 1:
+	- outputs 32 images (28x28 pixels)
+
+Subsampling 1:
+	- uses max pooling (2x2)
+	- this halfs the image size
+
+CNN 2: 
+	- 64 convolutions 
+
+subsampling 2: 
+	- 2x2 kernel 
+
+FC layer: 
+	- 256 neurons
+	- 6 outputs (one for each expression)
+	-
