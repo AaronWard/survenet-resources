@@ -122,20 +122,49 @@ a center point.
 - network recieves 32x32 grayscale images
 - used 2 CNN layers, 2 sub sampling layers, 1 FC layer
 
+****
 CNN 1:
 	- outputs 32 images (28x28 pixels)
-
 Subsampling 1:
 	- uses max pooling (2x2)
 	- this halfs the image size
-
 CNN 2: 
 	- 64 convolutions 
-
 subsampling 2: 
 	- 2x2 kernel 
-
 FC layer: 
 	- 256 neurons
 	- 6 outputs (one for each expression)
 	-
+****
+
+- this used stochastic gradient descent to calculate the synaptic weights
+	between the neurons. 
+- Loss calculated using SoftMaxWithLoss
+- Activation function : ReLU because is learns much faster in deep achriectures. 
+
+
+------------------------------------------
+// EXPERIMENTS AND DISCUSSION
+
+- Image preprocessing steps were done using openCV, c++ and Caffe
+- NVIDIA graphics card and intel core i7 
+- Preprocessing : rotation, cropping, down sampling and intensity normalisation
+	took 0.02 seconds
+
+//Database
+- CK+ has 100 students ages 18-30
+- all images are 640 X 480 pixels 
+- each imahe has a descriptor file with it's facial point 
+	used to normalise the facial expression image
+
+//Preprocessing
+- Show a table of exprimentations with different types of preprocessing
+	a - no preprocessing at 53.57% averages
+	b - just cropping at 71.67% averages
+	c - just rotation correction 61.55% averages
+	d - cropping + rotation at 87.86% averages
+	e - intensity normalisation 57% averages
+	f - both normalisations at 86.67% averages
+	g - spatial normalisation and synthetic data at 87.1% averages
+	h - both normalisations and synthetic data at 89.76% averages
